@@ -9,7 +9,7 @@ exports.register = async (req, res, next) => {
         password
     } = req.body;
 
-    //Validate the input fields
+    //Validate the input fields. sends back error object is email and password input fields are empty
     const validationErrors = [];
 
     if (!email) {
@@ -46,7 +46,7 @@ exports.register = async (req, res, next) => {
             errors: validationErrors
         };
 
-        res.send(errorObject);
+        res.status(422).send(errorObject);
 
         return;
     }
