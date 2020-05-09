@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const passport = require('passport');
 
 //register function that validates and registers user emails and passwords
 exports.register = async (req, res, next) => {
@@ -139,9 +140,24 @@ exports.login = async (req, res, next) => {
         return;
     }
 
-    res.status(200).send({
-        success: true
-    })
+    //using passport to authenticate user upon login
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            res.status(401).send(info)
+            return;
+        }
+
+        if (user) {
+            //Send JWT token to client
+        }
+
+        //for testing:
+        res.status(200).send(user)
+    })(req, res, next);
 }
 
 

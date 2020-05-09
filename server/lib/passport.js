@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const User = require('../models/User');
 
 
 const localOptions = {
@@ -17,7 +18,6 @@ const localLogin = new LocalStrategy(localOptions,function(email, password, done
             //No user with that email address.. Cannot proceed
             done(null, null, {
                 code: 'GLOBAL_ERROR',
-                field: 'email',
                 message: 'Your login credentials could not be verified. Please try agian.'
             })
             return;
