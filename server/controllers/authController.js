@@ -51,7 +51,7 @@ exports.register = async (req, res, next) => {
         return;
     }
 
-    // save user info to database
+    // save user info to database and checks if the user already exists in the db.  If they already exist thi sends back the error object
     try {
         const existingUser = await User.findOne({email});
         if (existingUser) {
@@ -90,6 +90,61 @@ exports.register = async (req, res, next) => {
 
     
 }
+
+
+exports.login = async (req, res, next) => {
+    const {
+        email,
+        password
+    } = req.body;
+
+    const validationErrors = [];
+
+    if (!email) {
+        validationErrors.push({
+            code: 'VALIDATION_ERROR',
+            field: 'email',
+            message: 'You must provide an email address'
+        });
+    }
+
+    //validates email
+    const isEmailValid = email && validateEmail(email);
+    if (email && !isEmailValid) {
+        validationErrors.push({
+            code: 'VALIDATION_ERROR',
+            field: 'email',
+            message: 'Not a valid email'
+        });
+    }
+
+    // add password validation requirements
+
+    if (!password){
+        validationErrors.push({
+            code: 'VALIDATION_ERROR',
+            field: 'password',
+            message: 'You must provide a valid password'
+        });
+    }
+
+    if(validationErrors.length) {
+        const errorObject = {
+            error: true,
+            errors: validationErrors
+        };
+
+        res.status(422).send(errorObject);
+
+        return;
+    }
+
+    res.status(200).send({
+        success: true
+    })
+}
+
+
 
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
