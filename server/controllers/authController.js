@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 //register function that validates and registers user emails and passwords
 exports.register = async (req, res, next) => {
@@ -150,13 +151,18 @@ exports.login = async (req, res, next) => {
             res.status(401).send(info)
             return;
         }
+        const userObject = user.toObject();
 
-        if (user) {
-            //Send JWT token to client
-        }
+        const jwtToken = jwt.sign(userObject, process.env.JWT_SECRET || 'TEMP_JWT_SECRET', {
+            expiresIn: 86400 //passing in the number of seconds in a day
+        })
 
-        //for testing:
-        res.status(200).send(user)
+        res.status(200).send({
+            token: jwtToken,
+            user: userObject
+        });
+        return;
+        
     })(req, res, next);
 }
 
