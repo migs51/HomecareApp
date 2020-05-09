@@ -12,7 +12,8 @@ const app = express();
 
 app.use(compression());
 app.use(bodyParser.json({
-    limit: '5m'
+    limit: '50mb',
+    extended: true
 }));
 app.use(cookieParser());
 

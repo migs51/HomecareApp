@@ -1,3 +1,5 @@
+const authController = require('./controllers/authController');
+
 function addRoutes(app) {
     app.all('*', (req, res, next) => {
         console.log(req.method + ' ' + req.url);
@@ -10,7 +12,11 @@ function addRoutes(app) {
             success: true
         });
     });
-    // app.post
+
+
+    app.post('/api/register', authController.register);
+
+
 }
 
 
