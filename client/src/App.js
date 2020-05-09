@@ -4,7 +4,7 @@ import {
   Route
 } from 'react-router-dom';
 import HomePage from './HomePage';
-import Login from './Login';
+import Login from './account/Login';
 import Register from './account/Register';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
