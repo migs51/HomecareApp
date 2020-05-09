@@ -1,4 +1,9 @@
-exports.register = (req, res, next) => {
+const User = require('../models/User');
+
+//register function that validates and registers user emails and passwords
+exports.register = async (req, res, next) => {
+    console.log('req.body: ' , req.body);
+    //destructing body object to pull out email and password
     const {
         email,
         password
@@ -15,6 +20,7 @@ exports.register = (req, res, next) => {
         });
     }
 
+    //validates email
     const isEmailValid = email && validateEmail(email);
     if (email && !isEmailValid) {
         validationErrors.push({
@@ -23,6 +29,8 @@ exports.register = (req, res, next) => {
             message: 'Not a valid email'
         });
     }
+
+    // add password validation requirements
 
     if (!password){
         validationErrors.push({
@@ -43,7 +51,44 @@ exports.register = (req, res, next) => {
         return;
     }
 
-    res.status(200).send();
+    // save user info to database
+    try {
+        const existingUser = await User.findOne({email});
+        if (existingUser) {
+            const errorObject = {
+                error: true,
+                errors: [{
+                    code: 'VALIDATION_ERROR',
+                    field: 'Email',
+                    message: 'Email already exists'
+                }]
+            };
+            res.status(422).send(errorObject);
+
+
+            return;
+        }
+
+
+        let user = new User({
+            email,
+            password
+        });
+
+        const savedUser = await user.save();
+
+        console.log('savedUser ', savedUser);
+
+        res.status(200).send({
+            user: savedUser
+        })
+
+    } catch (e) {
+        console.log('e ', e);
+
+    }
+
+    
 }
 
 function validateEmail(email) {
