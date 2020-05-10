@@ -7,7 +7,12 @@ let User;
 if (!User) {
     let userSchema = new Schema({
         email: {type: String, require: true, lowercase: true, unique: true},
-        password: {type: String, required: true}
+        password: {type: String, required: true},
+        //Fields related to account activation
+        activated: { type: Boolean },
+        activationToken: { type: String, unique: true },
+        activationTokenSentAt: { type: Date },
+        activatedAt: { type: Date } 
     },
     {
         timestamps: true

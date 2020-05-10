@@ -1,10 +1,10 @@
 const User = require('../models/User');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const uuidv1 = require('uuid/v1');
 
 //register function that validates and registers user emails and passwords
 exports.register = async (req, res, next) => {
-    console.log('req.body: ' , req.body);
     //destructing body object to pull out email and password
     const {
         email,
@@ -71,10 +71,14 @@ exports.register = async (req, res, next) => {
             return;
         }
 
-
+    //if user doesn't already exist we create the new user here
         let user = new User({
             email,
-            password
+            password,
+            activated: false,
+            activationToken: uuidv1(),
+            activationTokenSentAt: Date.now()
+
         });
 
         const savedUser = await user.save();
