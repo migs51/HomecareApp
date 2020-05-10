@@ -1,5 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../models/User');
 
 
@@ -45,5 +47,42 @@ const localLogin = new LocalStrategy(localOptions,function(email, password, done
             })
     });
 }); 
+
+const jwtOpts = {}
+// jwtOpts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+
+jwtOpts.jwtFromRequest = (req) => {
+    const cookies = req.cookies;
+    console.log('cookies', cookies);
+    const token = cookies.token;
+
+    if (token) {
+        return token;
+    }
+
+    return null;
+}
+
+jwtOpts.secretOrKey = process.env.JWT_SECRET || 'TEMP_JWT_SECRET';
+
+passport.use(new JwtStrategy(jwtOpts, function(jwt_payload, done) {
+    console.log('jwt_payload', jwt_payload);
+
+    done('error', null, null);
+
+    // User.findOne({id: jwt_payload.sub}, function(err, user) {
+    //     if (err) {
+    //         return done(err, false);
+    //     }
+    //     if (user) {
+    //         return done(null, user);
+    //     } else {
+    //         return done(null, false);
+    //         // or you could create a new account
+    //     }
+    // });
+}));
+
+
 
 passport.use(localLogin)
