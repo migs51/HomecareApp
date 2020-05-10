@@ -152,8 +152,11 @@ exports.login = async (req, res, next) => {
             return;
         }
         const userObject = user.toObject();
+        const tokenObject = {
+            _id: userObject._id
+        }
 
-        const jwtToken = jwt.sign(userObject, process.env.JWT_SECRET || 'TEMP_JWT_SECRET', {
+        const jwtToken = jwt.sign(tokenObject, process.env.JWT_SECRET || 'TEMP_JWT_SECRET', {
             expiresIn: 86400 //passing in the number of seconds in a day
         })
 
@@ -166,6 +169,12 @@ exports.login = async (req, res, next) => {
     })(req, res, next);
 }
 
+exports.testAuth = async (req, res, next) => {
+    console.log('req.user', req.user);
+    res.send({
+        isLoggedIn: req.user ? true : false
+    })
+}
 
 
 function validateEmail(email) {

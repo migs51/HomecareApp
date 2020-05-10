@@ -51,13 +51,20 @@ const localLogin = new LocalStrategy(localOptions,function(email, password, done
 const jwtOpts = {}
 // jwtOpts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
+//extracts jwt from the cookie
 jwtOpts.jwtFromRequest = (req) => {
     const cookies = req.cookies;
-    console.log('cookies', cookies);
     const token = cookies.token;
 
     if (token) {
         return token;
+    }
+
+    const headers = req.headers || {};
+    const authHeader = headers.authorization || '';
+    const headerToken = authHeader.split(' ')[1];
+    if (headerToken) {
+        return headerToken;
     }
 
     return null;
@@ -65,22 +72,24 @@ jwtOpts.jwtFromRequest = (req) => {
 
 jwtOpts.secretOrKey = process.env.JWT_SECRET || 'TEMP_JWT_SECRET';
 
-passport.use(new JwtStrategy(jwtOpts, function(jwt_payload, done) {
-    console.log('jwt_payload', jwt_payload);
+passport.use(new JwtStrategy(jwtOpts, function(jwtPayload, done) {
+    const userId = jwtPayload._id;
 
-    done('error', null, null);
 
-    // User.findOne({id: jwt_payload.sub}, function(err, user) {
-    //     if (err) {
-    //         return done(err, false);
-    //     }
-    //     if (user) {
-    //         return done(null, user);
-    //     } else {
-    //         return done(null, false);
-    //         // or you could create a new account
-    //     }
-    // });
+    User.findOne({ _id: userId }, function(err, user) {
+        if (err) {
+            return done(err, false);
+        }
+        if (user) {
+            return done(null, user);
+        } else {
+            return done(null, false, {
+                code: 'GLOBAL_ERROR',
+                message: 'Email not associated with any account'
+            });
+            
+        }
+    });
 }));
 
 
