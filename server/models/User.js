@@ -8,6 +8,7 @@ if (!User) {
     let userSchema = new Schema({
         email: {type: String, require: true, lowercase: true, unique: true},
         password: {type: String, required: true},
+
         //Fields related to account activation
         activated: { type: Boolean },
         activationToken: { type: String, unique: true },
@@ -54,7 +55,20 @@ if (!User) {
 
         })
     }
-    
+
+    userSchema.statics.toClientObject = function(user) {
+        const userObject = user.toObject() || {};
+
+        const clientObject = {
+            _id: userObject._id,
+            email: userObject.email,
+            activated: userObject.activated,
+            createdAt: userObject.createdAt,
+            updatedAt: userObject.updatedAt
+        };
+
+        return clientObject;
+    }    
     User = mongoose.model('User', userSchema);
 }
 

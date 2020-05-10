@@ -86,7 +86,7 @@ exports.register = async (req, res, next) => {
         console.log('savedUser ', savedUser);
 
         res.status(200).send({
-            user: savedUser
+            user: User.toClientObject(savedUser)
         })
 
     } catch (e) {
