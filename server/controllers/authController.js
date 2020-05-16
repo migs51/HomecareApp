@@ -173,6 +173,61 @@ exports.login = async (req, res, next) => {
     })(req, res, next);
 }
 
+exports.accountActivate = async (req, res, next) => {
+    const {
+        activationToken
+    } = req.body;
+
+    if (!activationToken) {
+        const errorObject = {
+            error: true,
+            errors: [{
+                code: 'VALIDATION_ERROR',
+                message: 'Invalid Activation Token. Perhaps you request a new token?'
+            }]
+        };
+
+        res.status(422).send(errorObject);
+
+        return;
+    }
+
+    try {
+        const user = await User.findOne({
+            activationToken
+        });
+
+        if (!user) {
+            const errorObject = {
+                error: true,
+                errors: [{
+                    code: 'VALIDATION_ERROR',
+                    message: 'Invalid Activation Token. Perhaps you request a new token?'
+                }]
+            };
+    
+            res.status(422).send(errorObject);
+    
+            return;
+        }
+
+        ///We found a user
+        user.activated = true;
+        user.activatedToken = undefined;
+        user.activatedAt = Date.now();
+
+
+        const savedUser = await user.save();
+
+
+    } catch (e) {
+        console.log ('e ', e);
+        res.status(500).send({
+            error:true
+        })
+    }
+}
+
 exports.testAuth = async (req, res, next) => {
     console.log('req.user', req.user);
     res.send({

@@ -18,6 +18,7 @@ function addRoutes(app) {
 
     app.post('/api/register', authController.register);
     app.post('/api/login', authController.login);
+    app.post('/api/account-activate'. authController.accountActivate);
 
 
     app.get('/api/test-auth', checkAuth,  authController.testAuth);

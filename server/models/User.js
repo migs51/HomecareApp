@@ -11,7 +11,7 @@ if (!User) {
 
         //Fields related to account activation
         activated: { type: Boolean },
-        activationToken: { type: String, unique: true },
+        activationToken: { type: String, unique: true, sparse: true},
         activationTokenSentAt: { type: Date },
         activatedAt: { type: Date } 
     },
@@ -56,6 +56,7 @@ if (!User) {
         })
     }
 
+    //new user object that contains a subset of the user fields so we don't send sensitive info back to the client
     userSchema.statics.toClientObject = function(user) {
         const userObject = user.toObject() || {};
 
