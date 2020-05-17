@@ -234,6 +234,54 @@ exports.accountActivate = async (req, res, next) => {
     }
 }
 
+//resending activation link method
+exports.resendActivationLink = async (req, res, next) => {
+    const {
+        email 
+    } = req.body;
+
+    if (!email) {
+        const errorObject = {
+            error: true,
+            errors: [{
+                code: 'VALIDATION_ERROR',
+                message: 'Please specific the email account that needs activation'
+            }]
+        };
+
+        res.status(422).send(errorObject);
+
+        return;
+    }
+
+    try {
+        const user = await User.findOne({
+            email
+        });
+
+        //if user is in db and is NOT activated then send new activation link
+        if (user && !user.activated) {
+            user.activationToken = uuidv1();
+            user.activationTokenSentAt = Date.now();
+
+            await user.save();
+
+            //send activation email.....
+        }
+
+        return res.send({
+            message: 'Activation Link has been sent'
+        })
+
+
+    } catch (e) {
+        console.log('e ', e);
+        res.status(500).send({
+            error: true
+        })
+    }
+}
+
 exports.testAuth = async (req, res, next) => {
     console.log('req.user', req.user);
     res.send({
