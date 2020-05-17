@@ -6,6 +6,7 @@ import {
 import HomePage from './HomePage';
 import Login from './account/Login';
 import Register from './account/Register';
+import AccountActivation from './account/AccountActivation'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 
@@ -20,6 +21,7 @@ function App() {
       <Route exact path="/" component={HomePage} />
       <Route exact path="/login" component={Login}/>
       <Route exact path="/register" component={Register}/>
+      <Route exact path="/account/activate" component={AccountActivation}/>
 
     </div>
   );

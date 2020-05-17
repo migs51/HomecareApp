@@ -189,6 +189,8 @@ exports.accountActivate = async (req, res, next) => {
 
         res.status(422).send(errorObject);
 
+
+
         return;
     }
 
@@ -211,13 +213,17 @@ exports.accountActivate = async (req, res, next) => {
             return;
         }
 
-        ///We found a user
+        ///We found a user and change their stats activated = true
         user.activated = true;
-        user.activatedToken = undefined;
+        user.activationToken = undefined;
         user.activatedAt = Date.now();
 
 
         const savedUser = await user.save();
+
+        return res.send({
+            message: 'Your account has been activated. Please proceed to the Login page to Sign in'
+        });
 
 
     } catch (e) {
