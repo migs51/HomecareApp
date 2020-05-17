@@ -7,6 +7,7 @@ import HomePage from './HomePage';
 import Login from './account/Login';
 import Register from './account/Register';
 import AccountActivation from './account/AccountActivation'
+import ResendActivationLink from './account/ResendActivationLink';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 
@@ -22,6 +23,7 @@ function App() {
       <Route exact path="/login" component={Login}/>
       <Route exact path="/register" component={Register}/>
       <Route exact path="/account/activate" component={AccountActivation}/>
+      <Route exact path="/account/resend-activation-link" component={ResendActivationLink}/>
 
     </div>
   );
