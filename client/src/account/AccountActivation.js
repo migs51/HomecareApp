@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
+import Alert from 'react-bootstrap/Alert';
+import { Link } from 'react-router-dom';
+
 
 class AccountActivation extends Component {
     state = {
@@ -67,18 +70,44 @@ class AccountActivation extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="container">
                 {
                     this.state.busy ?
                     <div>Activating Account.....</div>:
                     null
                 }
                 {
-                    this.state.error && <div> An error occurred. Perhaps you requested a new token?</div>   
+                    this.state.error && 
+                    (
+                    <div>
+                        <Alert variant="danger">
+                            An error occurred. Perhaps you requested a new token?
+                        </Alert>
+                        <div>
+                            <Link to="/resend-activation-token">Request a new Activation Token</Link>  
+                        </div>
+                    </div>
+                    )
+
+ 
                 }
 
                 {
-                    this.state.success && <div>Successfully activated your account. Please proceed to the Login screen to sign in.</div>
+                    this.state.success &&
+                    (
+                        <div>
+                            <Alert variant="success">
+                                Successfully activated your account. Please proceed to the Login page to sign in.
+                            </Alert>
+                            <div>
+                                <Link to="/login">Login</Link>  
+                            </div>
+
+                        </div>
+
+                        
+                    )
+
                 }
                 
             </div>
